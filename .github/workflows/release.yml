@@ -1,0 +1,86 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.20'
+
+      - name: Build for Linux AMD64
+        env:
+          GOOS: linux
+          GOARCH: amd64
+        run: |
+          go build -ldflags="-s -w" -o bulkmail-tui-linux-amd64
+          tar -czf bulkmail-tui-linux-amd64.tar.gz bulkmail-tui-linux-amd64
+
+      - name: Build for Linux ARM64
+        env:
+          GOOS: linux
+          GOARCH: arm64
+        run: |
+          go build -ldflags="-s -w" -o bulkmail-tui-linux-arm64
+          tar -czf bulkmail-tui-linux-arm64.tar.gz bulkmail-tui-linux-arm64
+
+      - name: Build for macOS AMD64
+        env:
+          GOOS: darwin
+          GOARCH: amd64
+        run: |
+          go build -ldflags="-s -w" -o bulkmail-tui-darwin-amd64
+          tar -czf bulkmail-tui-darwin-amd64.tar.gz bulkmail-tui-darwin-amd64
+
+      - name: Build for macOS ARM64 (Apple Silicon)
+        env:
+          GOOS: darwin
+          GOARCH: arm64
+        run: |
+          go build -ldflags="-s -w" -o bulkmail-tui-darwin-arm64
+          tar -czf bulkmail-tui-darwin-arm64.tar.gz bulkmail-tui-darwin-arm64
+
+      - name: Build for Windows AMD64
+        env:
+          GOOS: windows
+          GOARCH: amd64
+        run: |
+          go build -ldflags="-s -w" -o bulkmail-tui-windows-amd64.exe
+          zip bulkmail-tui-windows-amd64.zip bulkmail-tui-windows-amd64.exe
+
+      - name: Build for Windows ARM64
+        env:
+          GOOS: windows
+          GOARCH: arm64
+        run: |
+          go build -ldflags="-s -w" -o bulkmail-tui-windows-arm64.exe
+          zip bulkmail-tui-windows-arm64.zip bulkmail-tui-windows-arm64.exe
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            bulkmail-tui-linux-amd64.tar.gz
+            bulkmail-tui-linux-arm64.tar.gz
+            bulkmail-tui-darwin-amd64.tar.gz
+            bulkmail-tui-darwin-arm64.tar.gz
+            bulkmail-tui-windows-amd64.zip
+            bulkmail-tui-windows-arm64.zip
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

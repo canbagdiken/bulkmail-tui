@@ -1,0 +1,54 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+main
+main.exe
+bulkmail
+bulkmail.exe
+main_*
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Config files with credentials
+config.yaml
+config_backup.yaml
+
+# Database files
+data.txt
+*.db
+
+# Log files
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temp files
+*.tmp
+test.txt
+
+# Build artifacts
+dist/
+build/
+
+# UPX
+upx*/
+*.zip
+
+# Backup folders
+*backup/
