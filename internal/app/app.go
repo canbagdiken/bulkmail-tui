@@ -335,4 +335,3 @@ func (a *App) UpdateDataFile(path string) error {
 	}
 	return nil
 }
-

@@ -65,21 +65,21 @@ type Stats struct {
 }
 
 type ViewData struct {
-	StatusText       string
-	IsRunning        bool
-	PendingCount     int
-	PendingEmails    []PendingEmail
-	CurrentScreen    int
-	Logs             []string
-	Stats            Stats
-	DelaySeconds     int
-	ImportFiles      []string
-	SelectedFile     int
-	TabNames         []string
-	LogsContent      string
-	StatsContent     string
-	PendingContent   string
-	ImportContent    string
+	StatusText     string
+	IsRunning      bool
+	PendingCount   int
+	PendingEmails  []PendingEmail
+	CurrentScreen  int
+	Logs           []string
+	Stats          Stats
+	DelaySeconds   int
+	ImportFiles    []string
+	SelectedFile   int
+	TabNames       []string
+	LogsContent    string
+	StatsContent   string
+	PendingContent string
+	ImportContent  string
 }
 
 type PendingEmail struct {
@@ -145,4 +145,3 @@ func (k keyMap) FullHelp() [][]key.Binding {
 		{k.Up, k.Down, k.Clear, k.Help},
 	}
 }
-

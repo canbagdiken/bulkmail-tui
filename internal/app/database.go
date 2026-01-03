@@ -56,7 +56,7 @@ func (r *dbRecord) String() string {
 	if r.Timestamp.IsZero() {
 		timestampStr = "0000-00-00T00:00:00Z"
 	}
-	
+
 	line := timestampStr + " ; " + r.Status + " ; " + r.Email
 	if r.Error != "" {
 		line += " ; " + r.Error
@@ -247,7 +247,7 @@ func ResetStuckSending(path string, timeout time.Duration) (int, error) {
 
 	count := 0
 	now := time.Now()
-	
+
 	for i, line := range lines {
 		record, err := parseDBLine(line)
 		if err != nil {
@@ -267,7 +267,6 @@ func ResetStuckSending(path string, timeout time.Duration) (int, error) {
 	if count > 0 {
 		err = db.writeLines(lines)
 	}
-	
+
 	return count, err
 }
-

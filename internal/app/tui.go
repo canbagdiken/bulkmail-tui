@@ -321,8 +321,8 @@ func (m model) View() string {
 
 // RunTUI starts the Terminal User Interface
 func RunTUI(application *App) error {
-m := model{app: application}
-p := tea.NewProgram(&m)
-_, err := p.Run()
-return err
+	m := model{app: application}
+	p := tea.NewProgram(&m)
+	_, err := p.Run()
+	return err
 }

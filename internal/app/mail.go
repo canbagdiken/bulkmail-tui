@@ -16,19 +16,19 @@ import (
 func htmlToPlainText(html string) string {
 	// {{email}} gibi placeholder'ları koru
 	text := html
-	
+
 	// <br>, <br/>, <br /> -> \n
 	text = regexp.MustCompile(`(?i)<br\s*/?\s*>`).ReplaceAllString(text, "\n")
-	
+
 	// </p>, </div>, </h1>, </h2>, vb -> \n\n
 	text = regexp.MustCompile(`(?i)</(?:p|div|h[1-6]|li|tr)>`).ReplaceAllString(text, "\n\n")
-	
+
 	// <a href="url">text</a> -> text (url)
 	text = regexp.MustCompile(`(?i)<a[^>]+href=["']([^"']+)["'][^>]*>([^<]+)</a>`).ReplaceAllString(text, "$2 ($1)")
-	
+
 	// Tüm HTML tag'lerini kaldır
 	text = regexp.MustCompile(`<[^>]+>`).ReplaceAllString(text, "")
-	
+
 	// HTML entity'leri
 	text = strings.ReplaceAll(text, "&nbsp;", " ")
 	text = strings.ReplaceAll(text, "&amp;", "&")
@@ -36,13 +36,13 @@ func htmlToPlainText(html string) string {
 	text = strings.ReplaceAll(text, "&gt;", ">")
 	text = strings.ReplaceAll(text, "&quot;", "\"")
 	text = strings.ReplaceAll(text, "&#39;", "'")
-	
+
 	// 3+ ardışık \n -> \n\n
 	text = regexp.MustCompile(`\n{3,}`).ReplaceAllString(text, "\n\n")
-	
+
 	// Boşlukları temizle
 	text = strings.TrimSpace(text)
-	
+
 	return text
 }
 
@@ -61,15 +61,15 @@ func SendMail(cfg *Config, to, subject, htmlBody string) error {
 
 	// Template'deki {{email}} placeholder'ını değiştir
 	body := strings.ReplaceAll(htmlBody, "{{email}}", to)
-	
+
 	// HTML'den plain text otomatik üret
 	plainText := htmlToPlainText(body)
-	
+
 	m.SetBody("text/plain", plainText)
 	m.AddAlternative("text/html", body)
 
 	d := gomail.NewDialer(cfg.SMTP.Host, cfg.SMTP.Port, cfg.SMTP.Username, cfg.SMTP.Password)
-	
+
 	if cfg.SMTP.Port == 465 {
 		d.SSL = true
 	} else {
@@ -81,4 +81,3 @@ func SendMail(cfg *Config, to, subject, htmlBody string) error {
 
 	return d.DialAndSend(m)
 }
-

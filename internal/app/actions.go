@@ -172,4 +172,3 @@ func (a *App) ClearLogs() {
 	a.logs = []string{"Logs cleared"}
 	a.mu.Unlock()
 }
-

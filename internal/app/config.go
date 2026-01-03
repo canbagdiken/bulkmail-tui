@@ -25,4 +25,3 @@ func InitDB(path string) error {
 	}
 	return nil
 }
-

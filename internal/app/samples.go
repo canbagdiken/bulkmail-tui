@@ -46,4 +46,3 @@ func CreateSampleData(path string) error {
 	sample := time.Now().Format(time.RFC3339) + " ; " + StatusPending + " ; sample@example.com\n"
 	return os.WriteFile(path, []byte(sample), 0644)
 }
-
