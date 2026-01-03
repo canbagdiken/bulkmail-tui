@@ -23,6 +23,9 @@ jobs:
         with:
           go-version: '1.24'
 
+      - name: Tidy dependencies
+        run: go mod tidy
+
       - name: Verify dependencies
         run: go mod verify
 
@@ -45,9 +48,12 @@ jobs:
 
       - name: Build binaries
         run: |
-          GOOS=linux GOARCH=amd64 go build -o bulkmail-tui-linux-amd64
-          GOOS=windows GOARCH=amd64 go build -o bulkmail-tui-windows-amd64.exe
-          GOOS=darwin GOARCH=amd64 go build -o bulkmail-tui-darwin-amd64
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bulkmail-tui-linux-amd64
+          GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o bulkmail-tui-linux-arm64
+          GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o bulkmail-tui-darwin-amd64
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o bulkmail-tui-darwin-arm64
+          GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o bulkmail-tui-windows-amd64.exe
+          GOOS=windows GOARCH=arm64 go build -ldflags="-s -w" -o bulkmail-tui-windows-arm64.exe
 
       - name: Check for required files
         run: |
