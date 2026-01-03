@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Verify dependencies
+        run: go mod verify
+
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Run go fmt check
+        run: |
+          if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
+            echo "Please run 'go fmt ./...' to format the code"
+            gofmt -s -l .
+            exit 1
+          fi
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Run tests
+        run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+      - name: Build binaries
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o bulkmail-tui-linux-amd64
+          GOOS=windows GOARCH=amd64 go build -o bulkmail-tui-windows-amd64.exe
+          GOOS=darwin GOARCH=amd64 go build -o bulkmail-tui-darwin-amd64
+
+      - name: Check for required files
+        run: |
+          test -f README.md || (echo "README.md not found" && exit 1)
+          test -f LICENSE || (echo "LICENSE not found" && exit 1)
+          test -f go.mod || (echo "go.mod not found" && exit 1)
+          test -f main.go || (echo "main.go not found" && exit 1)
+          echo "All required files present"
+
+      - name: Security check - no sensitive data
+        run: |
+          if grep -r "password.*=" . --include="*.go" | grep -v "password-here" | grep -v "your-password"; then
+            echo "Potential hardcoded password found"
+            exit 1
+          fi
+          echo "No hardcoded passwords detected"
